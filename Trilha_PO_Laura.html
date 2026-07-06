@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0F172A">
+<title>Trilha PO — Laura</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#0F172A;--blue:#1D5FA8;--blue-lt:#E8F1FB;--purple:#5346B5;--pur-lt:#EDECFD;
+  --green:#2E6B10;--grn-lt:#EAF3DE;--amber:#7A4608;--amb-lt:#FDF0DC;
+  --coral:#8B2C14;--cor-lt:#FAEAE5;--gray:#F7F6F2;--gline:#E2E0D8;
+  --gtxt:#6B6760;--white:#FFFFFF;--ink:#1A1917;
+  --tab-h:60px;--hdr-h:56px;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bot:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{height:-webkit-fill-available;}
+body{font-family:'DM Sans',sans-serif;background:#F4F2EC;color:var(--ink);
+  min-height:100vh;min-height:-webkit-fill-available;
+  padding-top:calc(var(--hdr-h) + var(--safe-top));
+  padding-bottom:calc(var(--tab-h) + var(--safe-bot) + 12px);
+  -webkit-font-smoothing:antialiased;}
+
+.hdr{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--navy);
+  border-bottom:2px solid var(--blue);padding-top:var(--safe-top);
+  height:calc(var(--hdr-h) + var(--safe-top));}
+.hdr-in{width:100%;padding:0 16px 10px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.brand{font-family:'DM Serif Display',serif;font-size:17px;color:#fff;letter-spacing:-.3px;white-space:nowrap;}
+.brand span{color:#6EA8E8;}
+.prog-wrap{flex:1;max-width:150px;}
+.prog-lbl{font-size:10px;color:#8899AA;margin-bottom:3px;text-align:right;}
+.prog-bg{width:100%;height:5px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--blue),#5B8FD4);border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+
+.tabs{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--white);
+  border-top:1px solid var(--gline);padding-bottom:var(--safe-bot);display:flex;}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:10px 4px 8px;border:none;background:transparent;gap:3px;min-height:var(--tab-h);cursor:pointer;}
+.tab-ico{font-size:22px;line-height:1;transition:transform .15s;}
+.tab-lbl{font-size:10.5px;font-weight:500;color:var(--gtxt);}
+.tab.active .tab-lbl{color:var(--blue);font-weight:600;}
+.tab.active .tab-ico{transform:translateY(-1px);}
+
+.page{display:none;padding:14px;max-width:640px;margin:0 auto;}
+.page.active{display:block;}
+
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.sc{background:var(--white);border:1px solid var(--gline);border-radius:14px;padding:14px 12px;text-align:center;}
+.sn{font-family:'DM Serif Display',serif;font-size:30px;color:var(--blue);line-height:1;margin-bottom:3px;}
+.sl{font-size:11px;color:var(--gtxt);font-weight:500;}
+
+.card{background:var(--white);border-radius:16px;border:1px solid var(--gline);overflow:hidden;margin-bottom:14px;}
+.card-hd{padding:14px 16px 12px;border-bottom:1px solid var(--gline);display:flex;align-items:center;gap:9px;}
+.card-hd h2{font-family:'DM Serif Display',serif;font-size:16px;font-weight:400;color:var(--navy);}
+.card-bd{padding:14px 16px;}
+
+.ph-sec{margin-bottom:22px;}
+.ph-lbl{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.ph-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;color:#fff;flex-shrink:0;}
+.ph-info{flex:1;min-width:0;}
+.ph-info h3{font-size:14px;font-weight:600;color:var(--navy);}
+.ph-info p{font-size:11px;color:var(--gtxt);margin-top:1px;}
+.ph-dates{font-size:10.5px;color:var(--gtxt);background:var(--gray);border:1px solid var(--gline);border-radius:20px;padding:3px 9px;white-space:nowrap;}
+
+.ci{display:flex;align-items:flex-start;gap:11px;padding:14px 0;border-bottom:1px solid var(--gline);cursor:pointer;min-height:44px;}
+.ci:last-child{border-bottom:none;}
+.ck{width:24px;height:24px;border-radius:7px;border:2px solid var(--gline);background:var(--white);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.ck::after{content:'✓';font-size:14px;color:#fff;opacity:0;transition:opacity .15s;}
+.ci.done .ck{background:var(--green);border-color:var(--green);}
+.ci.done .ck::after{opacity:1;}
+.ci.done .ct{text-decoration:line-through;color:var(--gtxt);}
+.cc{flex:1;min-width:0;}
+.ct{font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:3px;line-height:1.4;}
+.cw{font-size:12px;color:var(--gtxt);line-height:1.5;margin-bottom:6px;}
+.pills{display:flex;flex-wrap:wrap;gap:4px;}
+.pill{font-size:10px;padding:2px 7px;border-radius:20px;border:1px solid;font-weight:500;}
+.pill-blue{color:var(--blue);background:var(--blue-lt);border-color:#BAD0EF;}
+.pill-purp{color:var(--purple);background:var(--pur-lt);border-color:#C4C0ED;}
+.pill-grn{color:var(--green);background:var(--grn-lt);border-color:#B4D89A;}
+.pill-amb{color:var(--amber);background:var(--amb-lt);border-color:#EAC98A;}
+.pill-coral{color:var(--coral);background:var(--cor-lt);border-color:#E8B9AE;}
+.cert-b{display:inline-block;margin-top:5px;font-size:10px;background:var(--amb-lt);color:var(--amber);border:1px solid #EAC98A;border-radius:20px;padding:2px 7px;font-weight:600;}
+.cd{font-size:10px;color:var(--gtxt);text-align:right;line-height:1.5;flex-shrink:0;margin-top:2px;}
+.ph-div{height:1px;background:var(--gline);margin:4px 0 20px;}
+
+.wi{border-radius:12px;border:1px solid var(--gline);overflow:hidden;background:var(--white);margin-bottom:10px;}
+.wh{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;user-select:none;min-height:48px;}
+.wn{font-size:11px;font-weight:700;color:#fff;border-radius:20px;padding:4px 10px;flex-shrink:0;}
+.wt{font-size:13px;font-weight:600;color:var(--navy);flex:1;}
+.wa{font-size:13px;color:var(--gtxt);transition:transform .2s;flex-shrink:0;}
+.wa.open{transform:rotate(180deg);}
+.wb{padding:0 14px 14px;display:none;}
+.wb.open{display:block;}
+.wdr{font-size:11px;color:var(--gtxt);opacity:.7;margin-bottom:6px;margin-top:4px;}
+.wb-body{font-size:12.5px;color:var(--gtxt);line-height:1.6;margin-bottom:10px;}
+.we{font-size:12px;background:var(--grn-lt);color:var(--green);border:1px solid #B4D89A;border-radius:8px;padding:8px 12px;font-weight:500;line-height:1.4;}
+
+.ib{background:var(--blue-lt);border:1px solid #BAD0EF;border-radius:10px;padding:12px 14px;font-size:12.5px;color:var(--navy);line-height:1.6;margin-bottom:14px;}
+.ib strong{color:var(--blue);}
+
+.qsel{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
+.qbtn{font-family:'DM Sans',sans-serif;font-size:12.5px;padding:7px 12px;border-radius:20px;border:1.5px solid var(--gline);background:var(--white);cursor:pointer;color:var(--gtxt);font-weight:500;min-height:36px;}
+.qbtn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+#quiz-area{background:var(--gray);border:1px solid var(--gline);border-radius:12px;padding:14px;min-height:80px;font-size:13px;color:var(--ink);line-height:1.7;}
+#quiz-area.loading{color:var(--gtxt);font-style:italic;}
+.qgo{font-family:'DM Sans',sans-serif;width:100%;margin-top:12px;padding:14px;background:var(--navy);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;min-height:48px;}
+.qgo:disabled{background:var(--gtxt);}
+.qq{margin-bottom:20px;}
+.qq-t{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:10px;line-height:1.5;}
+.qo{display:flex;align-items:flex-start;gap:8px;padding:12px 13px;border-radius:10px;border:1.5px solid var(--gline);background:var(--white);cursor:pointer;margin-bottom:7px;font-size:13px;color:var(--ink);line-height:1.4;min-height:44px;}
+.qo.correct{border-color:var(--green);background:var(--grn-lt);color:var(--green);font-weight:600;}
+.qo.wrong{border-color:var(--coral);background:var(--cor-lt);color:var(--coral);}
+.qo.disabled{pointer-events:none;}
+.qfb{font-size:12.5px;color:var(--gtxt);margin-top:6px;padding:8px 12px;background:var(--gray);border-radius:8px;line-height:1.5;}
+.qsc{text-align:center;padding:20px 16px;background:var(--grn-lt);border:1px solid #B4D89A;border-radius:12px;font-size:14px;color:var(--green);font-weight:600;margin-top:12px;}
+.qsc span{font-family:'DM Serif Display',serif;font-size:36px;display:block;margin-bottom:6px;}
+.tip{background:var(--amb-lt);border:1px solid #EAC98A;border-radius:10px;padding:12px 14px;font-size:12.5px;color:var(--amber);line-height:1.6;margin-top:14px;}
+.tip strong{display:block;margin-bottom:3px;font-size:11px;text-transform:uppercase;letter-spacing:.4px;}
+
+.toast{position:fixed;bottom:calc(var(--tab-h) + var(--safe-bot) + 14px);left:50%;transform:translateX(-50%) translateY(8px);background:var(--navy);color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:500;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.cp{position:fixed;border-radius:2px;pointer-events:none;z-index:9999;animation:cf 1.2s ease-in forwards;}
+@keyframes cf{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;}}
+
+@media(min-width:640px){
+  .page{padding:24px;}
+  .stats{grid-template-columns:repeat(4,1fr);}
+  .qo:not(.disabled):not(.correct):not(.wrong):hover{border-color:var(--blue);background:var(--blue-lt);}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-in">
+    <div class="brand">Trilha <span>PO</span> · Laura</div>
+    <div class="prog-wrap">
+      <div class="prog-lbl" id="prog-lbl">0% concluído</div>
+      <div class="prog-bg"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+</header>
+
+<div class="page active" id="page-trilha">
+  <div class="stats">
+    <div class="sc"><div class="sn" id="s-done">0</div><div class="sl">Concluídos</div></div>
+    <div class="sc"><div class="sn" id="s-total">0</div><div class="sl">Total</div></div>
+    <div class="sc"><div class="sn">27</div><div class="sl">Semanas</div></div>
+    <div class="sc"><div class="sn">3</div><div class="sl">Certificações</div></div>
+  </div>
+  <div class="card">
+    <div class="card-hd">
+      <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--blue);flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+      <h2>Checklist da trilha</h2>
+    </div>
+    <div class="card-bd" id="checklist-body"></div>
+  </div>
+</div>
+
+<div class="page" id="page-crono">
+  <div class="ib"><strong>Início: 11 de maio de 2026</strong><br>Ritmo de 2–3h por dia. Toque em cada semana para ver o detalhe e o entregável.</div>
+  <div id="weeks-body"></div>
+</div>
+
+<div class="page" id="page-quiz">
+  <div class="card">
+    <div class="card-hd">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--coral);flex-shrink:0"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-linecap="round" stroke-width="2.5"/></svg>
+      <h2>Quiz semanal com IA</h2>
+    </div>
+    <div class="card-bd">
+      <p style="font-size:13px;color:var(--gtxt);margin-bottom:14px;line-height:1.5;">Selecione o bloco que acabou de concluir. A IA gera 5 perguntas novas a cada vez.</p>
+      <div class="qsel" id="quiz-selector"></div>
+      <div id="quiz-area">Selecione um bloco acima e toque em "Gerar quiz".</div>
+      <button class="qgo" id="quiz-btn" onclick="gerarQuiz()">✦ Gerar quiz</button>
+      <div class="tip"><strong>💡 Como usar</strong>Faça no último dia de cada bloco. Se acertar menos de 3/5, revise antes de avançar.</div>
+    </div>
+  </div>
+</div>
+
+<nav class="tabs">
+  <button class="tab active" onclick="goPage('trilha',this)">
+    <span class="tab-ico">☑️</span><span class="tab-lbl">Trilha</span>
+  </button>
+  <button class="tab" onclick="goPage('crono',this)">
+    <span class="tab-ico">📅</span><span class="tab-lbl">Cronograma</span>
+  </button>
+  <button class="tab" onclick="goPage('quiz',this)">
+    <span class="tab-ico">🧠</span><span class="tab-lbl">Quiz</span>
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function goPage(n,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+n).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const START=new Date(2026,4,11);
+function addD(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r;}
+function fmt(d){return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});}
+function wrange(w){return fmt(addD(START,(w-1)*7))+' – '+fmt(addD(START,w*7-1));}
+
+const PHASES=[
+  {num:1,title:'Entender o mundo de tech',sub:'Falar a língua do time sem ser dev',color:'#1D5FA8',weeks:[1,3],courses:[
+    {id:'git',title:'Introdução ao Git e GitHub',why:'Criar repositório, commitar e abrir PR transforma a PO em participante ativa. Portfolio no GitHub é exigido em muitos processos.',pills:['blue|Curso DIO','grn|Gratuito'],ws:1,cert:false},
+    {id:'logica',title:'Lógica de Programação Essencial',why:'User stories mais precisas, questionar estimativas com contexto e priorizar backlog com segurança. A ADS já cobre isso — use para adiantar.',pills:['blue|Curso DIO','grn|Gratuito'],ws:1,cert:false},
+    {id:'ghcert',title:'Formação GitHub Certification',why:'Certificação barata, reconhecida e rápida. Demonstra que você trabalha com ferramentas reais de time. Ótimo para early career.',pills:['blue|Formação DIO','amb|Certif. GitHub'],ws:2,cert:true},
+  ]},
+  {num:2,title:'Núcleo ágil — o coração do PO',sub:'Scrum, backlog, cerimônias, PSM I',color:'#5346B5',weeks:[4,14],courses:[
+    {id:'intro-scrum',title:'Introdução ao Scrum',why:'Curso mais leve — consolida fundamentos, terminologia e mindset ágil antes da formação completa.',pills:['purp|Curso DIO','grn|Gratuito'],ws:4,cert:false},
+    {id:'proj-ageis',title:'Projetos Ágeis com Scrum',why:'Cobre o framework completo: PO, SM, Dev team, backlog, sprint backlog, incremento, planning, daily, review, retro.',pills:['purp|Curso DIO'],ws:5,cert:false},
+    {id:'equipes',title:'Trabalhando em Equipes Ágeis',why:'Como colaborar com design, dev e stakeholders. Comunicação, facilitação e gestão de conflito no dia a dia.',pills:['purp|Curso DIO'],ws:6,cert:false},
+    {id:'fscrum',title:'Formação Scrum Master Certification DIO (22h+)',why:'Espinha dorsal da trilha. Básico ao avançado: tudo que cai na PSM I, cases reais (Sony, Intel), simulados e projetos para portfólio.',pills:['purp|Formação DIO PRO','amb|Prep PSM I'],ws:7,cert:false},
+    {id:'sguide',title:'Scrum Guide — leitura (PT-BR)',why:'Guia oficial gratuito em scrumguides.org. Base de qualquer certificação e de qualquer entrevista de PO.',pills:['grn|Gratuito','blue|Scrum.org'],ws:7,cert:false},
+    {id:'psm1',title:'Certificação PSM I — Scrum.org (~USD 150)',why:'A credencial mais reconhecida para vagas de PO e SM no Brasil. A formação DIO prepara exatamente para este exame.',pills:['amb|Certif. Internacional','coral|~USD 150'],ws:13,cert:true},
+  ]},
+  {num:3,title:'UX + Produto',sub:'Discovery, jornada do usuário, prototipagem',color:'#8B2C14',weeks:[15,20],courses:[
+    {id:'ux',title:'Formação UX Designer — DIO',why:'Personas, jornada do usuário, wireframes e validação de hipóteses são usados todo dia em produto. Muda a qualidade das decisões de backlog.',pills:['coral|Formação DIO'],ws:15,cert:false},
+    {id:'html',title:'HTML Developer + CSS Developer (básicos)',why:'Para entender o que é uma tela e como elementos se comportam — não é para programar. É para validar protótipos com precisão.',pills:['blue|Curso DIO'],ws:17,cert:false},
+    {id:'js',title:'JavaScript Developer (módulos introdutórios)',why:'Entender função, API e evento de clique muda como você escreve critérios de aceite — sem escrever histórias impossíveis de implementar.',pills:['blue|Curso DIO'],ws:19,cert:false},
+  ]},
+  {num:4,title:'Dados + IA',sub:'Métricas, Power BI, SQL, Inteligência Artificial',color:'#7A4608',weeks:[21,26],courses:[
+    {id:'powerbi',title:'Curso Power BI — DIO',why:'Montar seu próprio painel de métricas: conversão, retenção, NPS, velocidade do time. Muito valorizado em vagas de gestão de produto.',pills:['amb|Formação DIO'],ws:21,cert:false},
+    {id:'sql',title:'Curso SQL Specialist — DIO',why:'SELECT, WHERE, GROUP BY — buscar dados sem depender de analytics. Filtro em muitos processos seletivos de PO.',pills:['amb|Formação DIO'],ws:23,cert:false},
+    {id:'ia',title:'Curso Inteligência Artificial — DIO',why:'IA está no backlog de toda empresa. PO que entende o básico do que é viável se diferencia brutalmente.',pills:['amb|Curso DIO'],ws:24,cert:false},
+    {id:'ml',title:'Curso Machine Learning — módulos conceituais',why:'Treinar modelo, dado de entrada/saída, overfitting — sem programar. Conversa completamente diferente com times de dados.',pills:['amb|Curso DIO'],ws:25,cert:false},
+  ]},
+  {num:5,title:'Portfólio + Mercado',sub:'Projetos, LinkedIn, Talent Match, bootcamps',color:'#2E6B10',weeks:[27,99],courses:[
+    {id:'proj',title:'Desafios de projeto DIO — todos os entregáveis',why:'Cada formação gera projetos: cases Scrum, dashboards Power BI, wireframes. Publicar tudo no GitHub é seu portfólio.',pills:['grn|Projetos DIO','blue|Portfolio GitHub'],ws:27,cert:false},
+    {id:'talent',title:'Talent Match — plataforma de vagas DIO',why:'Perfil aparece para recrutadores: Inter, Localiza, Avanade, NTT Data, Carrefour e dezenas de outras.',pills:['grn|Plataforma DIO'],ws:28,cert:false},
+    {id:'bootcamps',title:'Bootcamps com empresas parceiras (ilimitados)',why:'DIO PRO dá acesso ilimitado. Participar de bootcamps acelera networking e pode gerar processos seletivos diretos.',pills:['grn|Bootcamps DIO PRO'],ws:29,cert:false},
+    {id:'qa',title:'Quality Assurance QA — módulos básicos',why:'PO escreve critérios de aceite e define o done. Entender teste funcional e UAT ajuda a escrever histórias muito mais completas.',pills:['blue|Curso DIO'],ws:30,cert:false},
+  ]},
+];
+
+const WEEKS=[
+  {w:1,c:'#1D5FA8',t:'Git + GitHub',b:'Criar conta no GitHub, fazer o curso de introdução ao Git, commitar os primeiros projetos. Foco: commits, branches e pull requests.',e:'Repositório GitHub criado e público com README.'},
+  {w:2,c:'#1D5FA8',t:'Lógica + GitHub Certification',b:'Terminar lógica de programação essencial. Fazer a prova da GitHub Foundation Certification — acessível e rápida.',e:'1º certificado DIO + GitHub Certification obtida.'},
+  {w:3,c:'#1D5FA8',t:'Revisão fase 1 + Quiz',b:'Revisar tudo da fase 1, organizar portfólio inicial no GitHub, fazer o quiz da semana para fixar.',e:'GitHub organizado. Quiz semanas 1–3 feito.'},
+  {w:4,c:'#5346B5',t:'Introdução ao Scrum',b:'Fazer o curso introdutório de Scrum na DIO. Começar a leitura do Scrum Guide em PT-BR (scrumguides.org).',e:'Curso concluído. Scrum Guide: pelo menos metade lida.'},
+  {w:5,c:'#5346B5',t:'Projetos Ágeis com Scrum',b:'Curso principal de Scrum na DIO. Foco nos papéis: PO, SM e Dev team. Como funciona o Product Backlog na prática.',e:'Certificado "Projetos Ágeis com Scrum" emitido.'},
+  {w:6,c:'#5346B5',t:'Equipes Ágeis + Scrum Guide',b:'Curso de equipes ágeis + terminar a leitura completa do Scrum Guide. Anotar os pontos que mais caem na PSM I.',e:'Scrum Guide lido 100%. Certificado de equipes ágeis.'},
+  {w:7,c:'#5346B5',t:'Início da Formação Scrum Master',b:'Entrar na formação completa da DIO. Módulo 1: Scrum Fundamentals. Módulo 2: Tudo que cai na PSM I.',e:'Módulos 1 e 2 da formação concluídos.'},
+  {w:8,c:'#5346B5',t:'Cases + Prática Scrum',b:'Módulo 3: Scrum na prática. Análise dos cases da Sony e Intel. Começar o projeto "Análise de Cases".',e:'Case de análise Scrum entregue no GitHub.'},
+  {w:9,c:'#5346B5',t:'Preparação PSM I — simulados',b:'Módulo 4: Como se preparar para a PSM I. Simulados iniciais. Identificar pontos fracos para revisar.',e:'Primeiro simulado feito. Score anotado.'},
+  {w:10,c:'#5346B5',t:'Simulados PSM I intensivo',b:'Módulo 5: simulados completos. Meta: acertar 85%+ antes de marcar a prova. Revisar erros com o Scrum Guide.',e:'2 simulados completos com score ≥ 85%.'},
+  {w:11,c:'#5346B5',t:'Projeto final da Formação',b:'Projeto "Complete o Framework Scrum" — último entregável da formação. Publicar no GitHub com boa descrição.',e:'Projeto final publicado no GitHub.'},
+  {w:12,c:'#5346B5',t:'Revisão geral PSM I',b:'Revisão de todos os simulados e conceitos do Scrum Guide. Foco em eventos e artefatos — os mais cobrados.',e:'Revisão feita. Prova PSM I agendada.'},
+  {w:13,c:'#5346B5',t:'🏆 Semana da PSM I',b:'Prova PSM I na Scrum.org. Reservar 2h para a prova. Ambientar-se com o sistema antes. Resultado aparece na hora.',e:'Certificação PSM I obtida! 🎉'},
+  {w:14,c:'#5346B5',t:'LinkedIn atualizado',b:'Adicionar PSM I no LinkedIn, atualizar título e experiências. Descanso ativo: assistir talks de PO no YouTube.',e:'LinkedIn com PSM I e Formação Scrum no perfil.'},
+  {w:15,c:'#8B2C14',t:'Início Formação UX Designer',b:'Entrar na formação de UX da DIO. Foco em: personas, jornada do usuário e discovery. Anotar como cada conceito se aplica ao PO.',e:'Módulos de personas e jornada do usuário concluídos.'},
+  {w:17,c:'#8B2C14',t:'HTML + CSS básico',b:'Cursos introdutórios de HTML e CSS. Objetivo: entender o que é uma tela e como elementos funcionam — não virar dev.',e:'Primeira página HTML criada (pode ser simples).'},
+  {w:19,c:'#8B2C14',t:'JavaScript introdutório',b:'Módulos iniciais de JS: função, evento, API. Suficiente para escrever critérios de aceite sem ambiguidade.',e:'Entender o que é uma chamada de API e um evento de clique.'},
+  {w:21,c:'#7A4608',t:'Power BI',b:'Formação Power BI na DIO. Criar o primeiro dashboard de métricas — pode usar dados fictícios de produto (conversão, NPS, retenção).',e:'Dashboard de métricas de produto no Power BI.'},
+  {w:23,c:'#7A4608',t:'SQL Specialist',b:'Cursos de SQL: SELECT, WHERE, GROUP BY, JOIN. Praticar com datasets gratuitos no Kaggle.',e:'Conseguir responder: "quais os 5 produtos mais vendidos?" (SQL).'},
+  {w:24,c:'#7A4608',t:'Inteligência Artificial',b:'Curso de IA na DIO. Foco: o que é viável com IA, como priorizar features de ML no backlog, o que perguntar para o time de dados.',e:'Entender diferença entre ML supervisionado e não-supervisionado.'},
+  {w:27,c:'#2E6B10',t:'Portfólio final + Talent Match',b:'Organizar todo o portfólio no GitHub com READMEs detalhados. Ativar Talent Match na DIO. Começar a aplicar para vagas júnior.',e:'Talent Match ativado. 3+ vagas de PO júnior pesquisadas.'},
+];
+
+const QUIZ_WEEKS=[
+  {label:'Sem. 1–3',  topic:'Git, GitHub, Lógica de Programação e conceitos básicos de tecnologia para PO'},
+  {label:'Sem. 4–6',  topic:'Introdução ao Scrum, framework ágil, papéis (PO, SM, Dev team) e cerimônias'},
+  {label:'Sem. 7–10', topic:'Formação Scrum Master: artefatos, eventos, Scrum Guide e preparação para PSM I'},
+  {label:'Sem. 11–14',topic:'Cases práticos de Scrum, simulados PSM I, certificação e atualização de perfil'},
+  {label:'Sem. 15–20',topic:'UX Design, personas, jornada do usuário, HTML/CSS básico e JavaScript introdutório'},
+  {label:'Sem. 21–26',topic:'Power BI, SQL básico, Inteligência Artificial e Machine Learning para Product Owner'},
+  {label:'Sem. 27+',  topic:'Portfólio, Talent Match, bootcamps, métricas de produto e estratégia de carreira PO'},
+];
+
+// CHECKLIST
+function renderChecklist(){
+  let h='';
+  PHASES.forEach(ph=>{
+    const w1=ph.weeks[0],w2=ph.weeks[1];
+    const dr=w2<99
+      ?fmt(addD(START,(w1-1)*7))+' → '+fmt(addD(START,w2*7-1))
+      :fmt(addD(START,(w1-1)*7))+' em diante';
+    h+=`<div class="ph-sec"><div class="ph-lbl">
+      <div class="ph-num" style="background:${ph.color}">${ph.num}</div>
+      <div class="ph-info"><h3>${ph.title}</h3><p>${ph.sub}</p></div>
+      <div class="ph-dates">${dr}</div></div>`;
+    ph.courses.forEach(c=>{
+      const done=localStorage.getItem('ck_'+c.id)==='1';
+      const pills=c.pills.map(p=>{const[cls,txt]=p.split('|');return`<span class="pill pill-${cls}">${txt}</span>`;}).join('');
+      const cb=c.cert?'<div class="cert-b">🏆 Certificação</div>':'';
+      const sd=fmt(addD(START,(c.ws-1)*7));
+      h+=`<div class="ci${done?' done':''}" id="ci-${c.id}" onclick="toggleCheck('${c.id}')">
+        <div class="ck"></div>
+        <div class="cc">
+          <div class="ct">${c.title}</div>
+          <div class="cw">${c.why}</div>
+          <div class="pills">${pills}</div>${cb}
+        </div>
+        <div class="cd">a partir de<br>${sd}</div>
+      </div>`;
+    });
+    h+='</div><div class="ph-div"></div>';
+  });
+  document.getElementById('checklist-body').innerHTML=h;
+  updateProg();
+}
+
+function toggleCheck(id){
+  const el=document.getElementById('ci-'+id);
+  const was=el.classList.contains('done');
+  el.classList.toggle('done',!was);
+  localStorage.setItem('ck_'+id,was?'0':'1');
+  updateProg();
+  if(!was){
+    toast('✓ Concluído!');
+    const all=document.querySelectorAll('.ci').length;
+    const done=document.querySelectorAll('.ci.done').length;
+    if(done===all) confetti();
+  }
+}
+
+function updateProg(){
+  const all=document.querySelectorAll('.ci').length;
+  const done=document.querySelectorAll('.ci.done').length;
+  const pct=all?Math.round(done/all*100):0;
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-lbl').textContent=pct+'% concluído';
+  document.getElementById('s-done').textContent=done;
+  document.getElementById('s-total').textContent=all;
+}
+
+// CRONOGRAMA
+function renderWeeks(){
+  let h='';
+  WEEKS.forEach(w=>{
+    h+=`<div class="wi">
+      <div class="wh" onclick="toggleWeek(this)">
+        <span class="wn" style="background:${w.c}">Sem. ${w.w}</span>
+        <span class="wt">${w.t}</span>
+        <span class="wa">▾</span>
+      </div>
+      <div class="wb">
+        <div class="wdr">${wrange(w.w)}</div>
+        <div class="wb-body">${w.b}</div>
+        <div class="we">✓ ${w.e}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('weeks-body').innerHTML=h;
+}
+
+function toggleWeek(el){
+  const b=el.nextElementSibling,a=el.querySelector('.wa');
+  b.classList.toggle('open');a.classList.toggle('open');
+}
+
+// QUIZ
+let selWeek=null,qAnswers=[],qData=[];
+
+function renderQuizSel(){
+  document.getElementById('quiz-selector').innerHTML=
+    QUIZ_WEEKS.map((w,i)=>`<button class="qbtn" onclick="selQuiz(${i})">${w.label}</button>`).join('');
+}
+
+function selQuiz(i){
+  selWeek=i;
+  document.querySelectorAll('.qbtn').forEach((b,j)=>b.classList.toggle('active',j===i));
+  const area=document.getElementById('quiz-area');
+  area.className='';area.textContent='Quiz sobre: '+QUIZ_WEEKS[i].topic+'. Toque em "Gerar quiz".';
+  qData=[];qAnswers=[];
+  document.getElementById('quiz-btn').textContent='✦ Gerar quiz';
+}
+
+async function gerarQuiz(){
+  if(selWeek===null){toast('Selecione um bloco primeiro!');return;}
+  const btn=document.getElementById('quiz-btn'),area=document.getElementById('quiz-area');
+  btn.disabled=true;btn.textContent='Gerando...';
+  area.className='loading';area.textContent='A IA está criando seu quiz personalizado...';
+  const prompt=`Você é um tutor especialista em Product Owner e metodologias ágeis.
+Crie um quiz com EXATAMENTE 5 perguntas de múltipla escolha sobre: "${QUIZ_WEEKS[selWeek].topic}".
+A estudante é Laura, migrando de carreira para PO. Estudou pré-med (capacidade analítica forte), mas iniciante em tecnologia e ágil.
+Responda APENAS com JSON válido sem texto adicional:
+{"perguntas":[{"pergunta":"texto","opcoes":["A) texto","B) texto","C) texto","D) texto"],"correta":0,"explicacao":"explicação breve 2-3 linhas"}]}
+"correta" é índice 0-3. Varie entre conceitual e prático.`;
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+    });
+    const d=await r.json();
+    const txt=d.content.map(b=>b.text||'').join('');
+    const parsed=JSON.parse(txt.replace(/```json|```/g,'').trim());
+    qData=parsed.perguntas;qAnswers=new Array(qData.length).fill(null);
+    renderQuiz();
+  }catch(e){
+    area.className='';area.innerHTML='<span style="color:var(--coral)">Erro ao gerar quiz. Tente novamente.</span>';
+  }finally{btn.disabled=false;btn.textContent='↺ Gerar novo quiz';}
+}
+
+function renderQuiz(){
+  const area=document.getElementById('quiz-area');area.className='';
+  let h='';
+  qData.forEach((q,qi)=>{
+    h+=`<div class="qq"><div class="qq-t">${qi+1}. ${q.pergunta}</div>`;
+    q.opcoes.forEach((o,oi)=>{h+=`<div class="qo" id="qo-${qi}-${oi}" onclick="resp(${qi},${oi})">${o}</div>`;});
+    h+=`<div id="qfb-${qi}" class="qfb" style="display:none">${q.explicacao}</div></div>`;
+  });
+  h+=`<div id="qresult" style="display:none"></div>`;
+  area.innerHTML=h;
+}
+
+function resp(qi,oi){
+  if(qAnswers[qi]!==null)return;
+  qAnswers[qi]=oi;
+  const q=qData[qi],correct=q.correta,right=oi===correct;
+  q.opcoes.forEach((_,i)=>{
+    const el=document.getElementById('qo-'+qi+'-'+i);
+    el.classList.add('disabled');
+    if(i===correct)el.classList.add('correct');
+    else if(i===oi&&!right)el.classList.add('wrong');
+  });
+  document.getElementById('qfb-'+qi).style.display='block';
+  if(qAnswers.filter(a=>a!==null).length===qData.length){
+    const n=qData.filter((q,i)=>qAnswers[i]===q.correta).length;
+    showScore(n);
+  }
+}
+
+function showScore(n){
+  const pct=Math.round(n/qData.length*100);
+  const msg=n>=5?'Perfeito! Pode avançar com confiança. 🚀':n>=4?'Muito bem! Só um detalhe para revisar.':n>=3?'Bom início! Revise os erros antes de seguir.':'Revise o conteúdo desta semana antes de avançar. Você consegue! 💪';
+  const el=document.getElementById('qresult');
+  el.innerHTML=`<div class="qsc"><span>${n}/${qData.length} (${pct}%)</span>${msg}</div>`;
+  el.style.display='block';
+  if(n>=4)confetti();
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+function confetti(){
+  const cols=['#1D5FA8','#5346B5','#2E6B10','#7A4608','#8B2C14','#F7C93E'];
+  for(let i=0;i<44;i++){
+    const el=document.createElement('div');el.className='cp';
+    el.style.cssText=`left:${Math.random()*100}vw;top:-10px;background:${cols[Math.floor(Math.random()*cols.length)]};animation-delay:${Math.random()*.5}s;animation-duration:${.9+Math.random()*.6}s;width:${6+Math.random()*6}px;height:${6+Math.random()*6}px;`;
+    document.body.appendChild(el);setTimeout(()=>el.remove(),2000);
+  }
+}
+
+renderChecklist();renderWeeks();renderQuizSel();
+</script>
+</body>
+</html>
